@@ -1,0 +1,62 @@
+<root>
+   <name>Ticket Report</name>
+   <key>ticketreport</key>
+   <state>stable</state>
+   <logo>https://raw.githubusercontent.com/TBastien/glpi-ticketreport/main/docs/logo.png</logo>
+   <description>
+      <short>
+         <en>Send a clean chronological email report of a ticket (followups, tasks, solution).</en>
+         <fr>Envoie par email un rapport chronologique propre d'un ticket (suivis, tâches, solution).</fr>
+      </short>
+      <long>
+         <en>
+Ticket Report adds a button to the GLPI ticket form that sends the ticket as a
+formatted email report: description, followups, tasks and solution merged in
+chronological order, excluding private items. Sections and recipients (To/Cc)
+are selectable in a preparation form before sending.
+         </en>
+         <fr>
+Ticket Report ajoute un bouton à la fiche ticket GLPI qui envoie le ticket sous
+forme de rapport email mis en forme : description, suivis, tâches et solution
+fusionnés dans l'ordre chronologique, hors éléments privés. Les sections et les
+destinataires (À/CC) sont sélectionnables dans un formulaire de préparation
+avant l'envoi.
+         </fr>
+      </long>
+   </description>
+   <homepage>https://github.com/TBastien/glpi-ticketreport</homepage>
+   <download>https://github.com/TBastien/glpi-ticketreport/releases</download>
+   <issues>https://github.com/TBastien/glpi-ticketreport/issues</issues>
+   <readme>https://github.com/TBastien/glpi-ticketreport#readme</readme>
+   <changelog>https://github.com/TBastien/glpi-ticketreport/blob/main/CHANGELOG.md</changelog>
+   <authors>
+      <author>SOFIA.nc</author>
+   </authors>
+   <versions>
+      <version>
+         <num>1.0.0</num>
+         <compatibility>~11.0.0</compatibility>
+         <download_url>https://github.com/TBastien/glpi-ticketreport/releases/download/v1.0.0/glpi-ticketreport-1.0.0.tar.bz2</download_url>
+      </version>
+   </versions>
+   <langs>
+      <lang>en_GB</lang>
+      <lang>fr_FR</lang>
+   </langs>
+   <license>GPL v2+</license>
+   <tags>
+      <en>
+         <tag>email</tag>
+         <tag>ticket</tag>
+         <tag>report</tag>
+      </en>
+      <fr>
+         <tag>email</tag>
+         <tag>ticket</tag>
+         <tag>rapport</tag>
+      </fr>
+   </tags>
+   <screenshots>
+      <screenshot>https://raw.githubusercontent.com/TBastien/glpi-ticketreport/main/docs/screenshot.png</screenshot>
+   </screenshots>
+</root>

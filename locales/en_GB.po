@@ -1,0 +1,107 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Ticket Report 1.0.0\n"
+"POT-Creation-Date: 2025-01-01 00:00+0000\n"
+"PO-Revision-Date: 2025-01-01 00:00+0000\n"
+"Last-Translator: SOFIA.nc\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Send report by email"
+msgstr "Send report by email"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Timeline"
+msgstr "Timeline"
+
+msgid "Followup"
+msgstr "Followup"
+
+msgid "Task"
+msgstr "Task"
+
+msgid "Solution"
+msgstr "Solution"
+
+msgid "Unknown"
+msgstr "Unknown"
+
+msgid "Ticket Report configuration"
+msgstr "Ticket Report configuration"
+
+msgid "Include ticket description"
+msgstr "Include ticket description"
+
+msgid "Include followups"
+msgstr "Include followups"
+
+msgid "Include tasks"
+msgstr "Include tasks"
+
+msgid "Include solution"
+msgstr "Include solution"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Saved"
+msgstr "Saved"
+
+msgid "New"
+msgstr "New"
+
+msgid "Processing (assigned)"
+msgstr "Processing (assigned)"
+
+msgid "Processing (planned)"
+msgstr "Processing (planned)"
+
+msgid "Pending"
+msgstr "Pending"
+
+msgid "Solved"
+msgstr "Solved"
+
+msgid "Closed"
+msgstr "Closed"
+
+msgid "Report sent"
+msgstr "Report sent"
+
+msgid "Failed to send report"
+msgstr "Failed to send report"
+
+msgid "Send report"
+msgstr "Send report"
+
+msgid "Recipients (To)"
+msgstr "Recipients (To)"
+
+msgid "Copy (Cc)"
+msgstr "Copy (Cc)"
+
+msgid "Sections to include"
+msgstr "Sections to include"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "No recipient selected"
+msgstr "No recipient selected"
+
+msgid "Observer"
+msgstr "Observer"
+
+msgid "Technician"
+msgstr "Technician"
+
+msgid "None"
+msgstr "None"
+
+msgid "Add recipient"
+msgstr "Add recipient"
+
