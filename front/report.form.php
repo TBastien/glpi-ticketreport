@@ -10,19 +10,16 @@
 
 include_once(__DIR__ . '/../hook.php');
 
-Session::checkLoginUser();
-
 $id     = (int) ($_GET['id'] ?? $_POST['id'] ?? 0);
 $ticket = new Ticket();
 
 if ($id <= 0 || !$ticket->getFromDB($id)) {
-    Html::displayNotFoundError();
-    exit;
+    throw new \Glpi\Exception\Http\NotFoundHttpException();
 }
 
-if (!$ticket->canViewItem()) {
-    Html::displayRightError();
-    exit;
+// The endpoint enforces the same per-ticket right as the button, on GET and POST.
+if (!$ticket->canUpdateItem()) {
+    throw new \Glpi\Exception\Http\AccessDeniedHttpException();
 }
 
 $redirect = Ticket::getFormURLWithID($id);
@@ -42,6 +39,11 @@ if (isset($_POST['send'])) {
 
     $to = isset($_POST['to']) && is_array($_POST['to']) ? $_POST['to'] : [];
     $cc = isset($_POST['cc']) && is_array($_POST['cc']) ? $_POST['cc'] : [];
+    if (count($to) + count($cc) > 10) {
+        Session::addMessageAfterRedirect(__('Too many recipients (maximum 10)', 'ticketreport'), false, ERROR);
+        Html::redirect($redirect);
+        exit;
+    }
 
     $to = array_values(array_unique(array_filter(array_map('trim', $to), static function ($e) {
         return filter_var($e, FILTER_VALIDATE_EMAIL) !== false;
@@ -99,13 +101,13 @@ Html::header(
     $action
 );
 
-echo '<form method="post" action="' . $action . '" id="report-form">';
+echo '<form method="post" action="' . htmlspecialchars($action, ENT_QUOTES, 'UTF-8') . '" id="report-form">';
 echo Html::hidden('id', ['value' => $id]);
 echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
 
 // --- Sections ---
 echo '<div class="card mb-3"><div class="card-body">';
-echo '<h5 class="card-title">' . __('Sections to include', 'ticketreport') . '</h5>';
+echo '<h5 class="card-title">' . htmlspecialchars(__('Sections to include', 'ticketreport'), ENT_QUOTES, 'UTF-8') . '</h5>';
 foreach ($sections as $key => $label) {
     $checked = (int) ($config[$key] ?? 0) ? 'checked' : '';
     echo '<div class="form-check">';
@@ -117,27 +119,27 @@ echo '</div></div>';
 
 // --- Recipients (To) ---
 echo '<div class="card mb-3"><div class="card-body">';
-echo '<h5 class="card-title">' . __('Recipients (To)', 'ticketreport') . '</h5>';
+echo '<h5 class="card-title">' . htmlspecialchars(__('Recipients (To)', 'ticketreport'), ENT_QUOTES, 'UTF-8') . '</h5>';
 echo '<div id="to-list">';
 foreach ($toEmails as $email) {
     echo plugin_ticketreport_recipient_row('to[]', $email);
 }
 echo '</div>';
 echo '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="trAddRow(\'to-list\', \'to[]\')">';
-echo '<i class="fa-solid fa-plus"></i>&nbsp;' . __('Add recipient', 'ticketreport');
+echo '<i class="fa-solid fa-plus"></i>&nbsp;' . htmlspecialchars(__('Add recipient', 'ticketreport'), ENT_QUOTES, 'UTF-8');
 echo '</button>';
 echo '</div></div>';
 
 // --- Copy (Cc) ---
 echo '<div class="card mb-3"><div class="card-body">';
-echo '<h5 class="card-title">' . __('Copy (Cc)', 'ticketreport') . '</h5>';
+echo '<h5 class="card-title">' . htmlspecialchars(__('Copy (Cc)', 'ticketreport'), ENT_QUOTES, 'UTF-8') . '</h5>';
 echo '<div id="cc-list">';
 foreach ($ccEmails as $email) {
     echo plugin_ticketreport_recipient_row('cc[]', $email);
 }
 echo '</div>';
 echo '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="trAddRow(\'cc-list\', \'cc[]\')">';
-echo '<i class="fa-solid fa-plus"></i>&nbsp;' . __('Add recipient', 'ticketreport');
+echo '<i class="fa-solid fa-plus"></i>&nbsp;' . htmlspecialchars(__('Add recipient', 'ticketreport'), ENT_QUOTES, 'UTF-8');
 echo '</button>';
 echo '</div></div>';
 
@@ -145,9 +147,9 @@ echo '</div></div>';
 echo '<div class="mt-3">';
 echo '<input type="hidden" name="send" value="1">';
 echo '<button type="submit" id="send-btn" class="btn btn-primary">';
-echo '<i class="fa-solid fa-paper-plane"></i>&nbsp;' . __('Send report', 'ticketreport');
+echo '<i class="fa-solid fa-paper-plane"></i>&nbsp;' . htmlspecialchars(__('Send report', 'ticketreport'), ENT_QUOTES, 'UTF-8');
 echo '</button>';
-echo ' <a class="btn btn-secondary" href="' . $redirect . '">' . __('Cancel', 'ticketreport') . '</a>';
+echo ' <a class="btn btn-secondary" href="' . htmlspecialchars($redirect, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars(__('Cancel', 'ticketreport'), ENT_QUOTES, 'UTF-8') . '</a>';
 echo '</div>';
 
 echo '</form>';

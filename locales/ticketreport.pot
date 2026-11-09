@@ -105,3 +105,5 @@ msgstr ""
 msgid "Add recipient"
 msgstr ""
 
+msgid "Too many recipients (maximum 10)"
+msgstr ""

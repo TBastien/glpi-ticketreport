@@ -27,6 +27,12 @@ function plugin_ticketreport_install()
  */
 function plugin_ticketreport_uninstall()
 {
+    Config::deleteConfigurationValues('ticketreport', [
+        'include_description',
+        'include_followups',
+        'include_tasks',
+        'include_solution',
+    ]);
     return true;
 }
 
@@ -53,8 +59,8 @@ function plugin_ticketreport_pre_show_item(array $params)
         . '/plugins/ticketreport/front/report.form.php?id=' . (int) $item->getID();
 
     echo '<div class="ticketreport-toolbar" style="display: inline-block; vertical-align: middle; margin: 0 10px 15px 0;">';
-    echo '<a class="btn btn-primary" href="' . $url . '">';
-    echo '<i class="fa-solid fa-paper-plane"></i>&nbsp;' . __('Send report by email', 'ticketreport');
+    echo '<a class="btn btn-primary" href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '">';
+    echo '<i class="fa-solid fa-paper-plane"></i>&nbsp;' . htmlspecialchars(__('Send report by email', 'ticketreport'), ENT_QUOTES, 'UTF-8');
     echo '</a>';
     echo '</div>';
 }
@@ -300,6 +306,9 @@ function plugin_ticketreport_build_text(Ticket $ticket, ?array $config = null): 
  */
 function plugin_ticketreport_send_email(array $to, array $cc, string $subject, string $html, string $text): bool
 {
+    if (count($to) + count($cc) > 10) {
+        return false;
+    }
     $sender    = Config::getEmailSender();
     $fromEmail = trim((string) ($sender['email'] ?? ''));
     if ($fromEmail === '' || !filter_var($fromEmail, FILTER_VALIDATE_EMAIL)) {

@@ -4,15 +4,15 @@
  * ---------------------------------------------------------------------
  * Ticket Report — "Send report by email" button in the ticket form.
  * ---------------------------------------------------------------------
- * Opens the mail client with a pre-filled plain-text report of the ticket:
- * description, followups and tasks (and optionally the solution), merged
+ * Sends an HTML and plain-text email report through GLPI's mailer:
+ * description, followups and tasks (optionally the solution), merged
  * chronologically, excluding private items. Sections are configurable.
  *
  * @copyright 2025 SOFIA.nc
  * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0-or-later
  */
 
-define('PLUGIN_TICKETREPORT_VERSION', '1.0.0');
+define('PLUGIN_TICKETREPORT_VERSION', '1.0.1');
 define('PLUGIN_TICKETREPORT_MIN_GLPI_VERSION', '11.0.0');
 define('PLUGIN_TICKETREPORT_MAX_GLPI_VERSION', '12.9.99');
 

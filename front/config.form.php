@@ -42,7 +42,7 @@ $fields = [
     'include_solution'    => __('Include solution', 'ticketreport'),
 ];
 
-echo '<form method="post" action="' . $action . '">';
+echo '<form method="post" action="' . htmlspecialchars($action, ENT_QUOTES, 'UTF-8') . '">';
 echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
 
 echo '<div class="card"><div class="card-body">';
@@ -58,7 +58,7 @@ foreach ($fields as $key => $label) {
 echo '</div></div>';
 
 echo '<div style="margin-top: 12px;">';
-echo '<button type="submit" name="update" class="btn btn-primary">' . __('Save', 'ticketreport') . '</button>';
+echo '<button type="submit" name="update" class="btn btn-primary">' . htmlspecialchars(__('Save', 'ticketreport'), ENT_QUOTES, 'UTF-8') . '</button>';
 echo '</div>';
 
 echo '</form>';
