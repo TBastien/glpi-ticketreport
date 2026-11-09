@@ -34,9 +34,11 @@ opens: tick the sections to include, check/edit the recipients (To: requesters, 
 observers + technicians), then **Send**.
 
 ### Notes
-- The button is only visible to users who can update the ticket.
-- The report endpoint requires the same ticket update right and accepts at most 10
-  recipient entries per send request.
+- The button is only visible in the central (technician) interface, to users who
+  can update the ticket.
+- The report endpoint enforces the same central-interface + ticket update right,
+  and accepts at most 10 recipient entries per send request.
+- A per-user send rate limit (20 sends/hour) guards against abuse.
 - Private items are always excluded.
 - Followup/task content is converted to plain text in the email (no raw HTML).
 - Colors match the GLPI 11 theme (statuses + timeline types).
@@ -64,9 +66,11 @@ un formulaire de préparation s'ouvre : cocher les sections à inclure, vérifie
 destinataires (À : demandeurs, CC : observateurs + techniciens), puis **Envoyer**.
 
 ### Notes
-- Le bouton n'est visible que pour les personnes pouvant modifier le ticket.
-- L'envoi exige également le droit de modification sur ce ticket et accepte au
-  maximum 10 entrées de destinataires par requête.
+- Le bouton n'est visible que dans l'interface centrale (technicien), pour les
+  personnes pouvant modifier le ticket.
+- L'envoi exige la même condition (interface centrale + droit de modification sur
+  le ticket) et accepte au maximum 10 entrées de destinataires par requête.
+- Une limite d'envoi par utilisateur (20 envois/heure) protège contre les abus.
 - Les éléments **privés** sont systématiquement exclus.
 - Le contenu des suivis/tâches est converti en texte brut dans l'email (pas de HTML brut).
 - Couleurs alignées sur le thème GLPI 11 (statuts + types de timeline).

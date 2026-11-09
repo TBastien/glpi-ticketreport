@@ -17,8 +17,12 @@ if ($id <= 0 || !$ticket->getFromDB($id)) {
     throw new \Glpi\Exception\Http\NotFoundHttpException();
 }
 
-// The endpoint enforces the same per-ticket right as the button, on GET and POST.
-if (!$ticket->canUpdateItem()) {
+// Reserved to the central (technician) interface only. In the helpdesk
+// interface, a Self-Service user's CREATE right satisfies canUpdateItem(), which
+// would let the requester of a just-opened ticket send the report to arbitrary
+// addresses without limit. Requiring the central interface plus the ticket
+// update right closes this, on both GET and POST.
+if (Session::getCurrentInterface() !== 'central' || !$ticket->canUpdateItem()) {
     throw new \Glpi\Exception\Http\AccessDeniedHttpException();
 }
 
@@ -30,6 +34,18 @@ $action = $CFG_GLPI['root_doc'] . '/plugins/ticketreport/front/report.form.php';
 // POST : send the report
 // ---------------------------------------------------------------------
 if (isset($_POST['send'])) {
+    // Per-user rate limit (defense in depth; the central-interface gate above is
+    // the primary access control).
+    if (!plugin_ticketreport_rate_limit_ok(Session::getLoginUserID())) {
+        Session::addMessageAfterRedirect(
+            __('Too many reports sent recently. Please retry later.', 'ticketreport'),
+            false,
+            ERROR
+        );
+        Html::redirect($redirect);
+        exit;
+    }
+
     $config = [
         'include_description' => isset($_POST['include_description']) ? 1 : 0,
         'include_followups'   => isset($_POST['include_followups']) ? 1 : 0,
@@ -66,6 +82,7 @@ if (isset($_POST['send'])) {
     $success = plugin_ticketreport_send_email($to, $cc, $subject, $html, $text);
 
     if ($success) {
+        plugin_ticketreport_record_send(Session::getLoginUserID());
         Session::addMessageAfterRedirect(__('Report sent', 'ticketreport'), false, INFO);
     } else {
         Session::addMessageAfterRedirect(__('Failed to send report', 'ticketreport'), false, ERROR);

@@ -12,9 +12,15 @@
  * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0-or-later
  */
 
-define('PLUGIN_TICKETREPORT_VERSION', '1.0.1');
+define('PLUGIN_TICKETREPORT_VERSION', '1.0.2');
 define('PLUGIN_TICKETREPORT_MIN_GLPI_VERSION', '11.0.0');
 define('PLUGIN_TICKETREPORT_MAX_GLPI_VERSION', '12.9.99');
+
+// Per-user send rate limit. Defense in depth: the report endpoint is also gated
+// on the central (technician) interface plus the ticket update right, so this
+// only bounds a technician account; it is not the primary access control.
+define('PLUGIN_TICKETREPORT_RATE_LIMIT_MAX', 20);      // max sends per window
+define('PLUGIN_TICKETREPORT_RATE_LIMIT_WINDOW', 3600); // window length, seconds
 
 /**
  * Plugin initialization: hook declaration.

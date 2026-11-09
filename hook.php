@@ -11,12 +11,50 @@
  */
 
 /**
- * Installation: nothing to create in the database.
+ * Rate-limit table name.
+ *
+ * @return string
+ */
+function plugin_ticketreport_rate_table(): string
+{
+    return 'glpi_plugin_ticketreport_sends';
+}
+
+/**
+ * Create the rate-limit table if missing (fresh install or upgrade from 1.0.1).
+ *
+ * @return void
+ */
+function plugin_ticketreport_rate_table_init(): void
+{
+    global $DB;
+
+    $table = plugin_ticketreport_rate_table();
+    if ($DB->tableExists($table)) {
+        return;
+    }
+
+    $DB->doQuery(
+        'CREATE TABLE `' . $table . '` (
+            `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+            `users_id` INT UNSIGNED NOT NULL DEFAULT 0,
+            `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`),
+            KEY `users_id` (`users_id`),
+            KEY `date` (`date`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
+    );
+}
+
+/**
+ * Installation: create the per-user rate-limit table.
  *
  * @return bool
  */
 function plugin_ticketreport_install()
 {
+    plugin_ticketreport_rate_table_init();
+
     return true;
 }
 
@@ -27,12 +65,17 @@ function plugin_ticketreport_install()
  */
 function plugin_ticketreport_uninstall()
 {
+    global $DB;
+
     Config::deleteConfigurationValues('ticketreport', [
         'include_description',
         'include_followups',
         'include_tasks',
         'include_solution',
     ]);
+
+    $DB->doQuery('DROP TABLE IF EXISTS `' . plugin_ticketreport_rate_table() . '`');
+
     return true;
 }
 
@@ -49,8 +92,10 @@ function plugin_ticketreport_pre_show_item(array $params)
         return;
     }
 
-    // Reserved to people who can act on the ticket (techs, admins).
-    if (!$item->canUpdateItem()) {
+    // Reserved to the central (technician) interface only. A Self-Service user in
+    // the helpdesk interface would otherwise pass canUpdateItem() (their CREATE
+    // right counts as "update" in helpdesk). The endpoint enforces the same rule.
+    if (Session::getCurrentInterface() !== 'central' || !$item->canUpdateItem()) {
         return;
     }
 
@@ -350,6 +395,53 @@ function plugin_ticketreport_send_email(array $to, array $cc, string $subject, s
     } catch (\Throwable $e) {
         return false;
     }
+}
+
+/**
+ * Whether the given user may still send a report (per-user rate limit).
+ *
+ * @return bool
+ */
+function plugin_ticketreport_rate_limit_ok(int $users_id): bool
+{
+    global $DB;
+
+    plugin_ticketreport_rate_table_init();
+
+    $since = date('Y-m-d H:i:s', time() - PLUGIN_TICKETREPORT_RATE_LIMIT_WINDOW);
+
+    $it = $DB->request([
+        'COUNT' => 'cpt',
+        'FROM'  => plugin_ticketreport_rate_table(),
+        'WHERE' => [
+            'users_id' => $users_id,
+            'date'     => ['>=', $since],
+        ],
+    ]);
+    $row = $it->current();
+
+    return ((int) ($row['cpt'] ?? 0)) < PLUGIN_TICKETREPORT_RATE_LIMIT_MAX;
+}
+
+/**
+ * Record a sent report for the given user (rate-limit bookkeeping).
+ *
+ * @return void
+ */
+function plugin_ticketreport_record_send(int $users_id): void
+{
+    global $DB;
+
+    plugin_ticketreport_rate_table_init();
+
+    $table = plugin_ticketreport_rate_table();
+    $DB->insert($table, [
+        'users_id' => $users_id,
+        'date'     => date('Y-m-d H:i:s'),
+    ]);
+
+    // Prune rows older than a day to keep the table small.
+    $DB->delete($table, ['date' => ['<', date('Y-m-d H:i:s', time() - 86400)]]);
 }
 
 /**

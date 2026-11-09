@@ -34,9 +34,9 @@ avant l'envoi.
    </authors>
    <versions>
       <version>
-         <num>1.0.1</num>
+         <num>1.0.2</num>
          <compatibility>~11.0.0</compatibility>
-         <download_url>https://github.com/TBastien/glpi-ticketreport/releases/download/v1.0.1/glpi-ticketreport-1.0.1.tar.bz2</download_url>
+         <download_url>https://github.com/TBastien/glpi-ticketreport/releases/download/v1.0.2/glpi-ticketreport-1.0.2.tar.bz2</download_url>
       </version>
    </versions>
    <langs>
