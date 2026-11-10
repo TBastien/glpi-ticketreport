@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.0.3] - 2026-11-10
+
+### Security
+- Require the ticket update right (`Ticket::canUpdate()`) in addition to the
+  central-interface gate: in the central interface, a requester without the
+  update right (e.g. the stock Observer profile) could still send a report on a
+  ticket they opened, through `canRequesterUpdateItem()`.
+
 ## [1.0.2] - 2026-11-10
 
 ### Security

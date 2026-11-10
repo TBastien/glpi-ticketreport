@@ -94,8 +94,11 @@ function plugin_ticketreport_pre_show_item(array $params)
 
     // Reserved to the central (technician) interface only. A Self-Service user in
     // the helpdesk interface would otherwise pass canUpdateItem() (their CREATE
-    // right counts as "update" in helpdesk). The endpoint enforces the same rule.
-    if (Session::getCurrentInterface() !== 'central' || !$item->canUpdateItem()) {
+    // right counts as "update" in helpdesk). In central, a requester without the
+    // ticket update right (e.g. the stock Observer profile) still passes
+    // canUpdateItem() through canRequesterUpdateItem(), so the actual update
+    // right is required too. The endpoint enforces the same rule.
+    if (Session::getCurrentInterface() !== 'central' || !Ticket::canUpdate() || !$item->canUpdateItem()) {
         return;
     }
 

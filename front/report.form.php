@@ -20,9 +20,11 @@ if ($id <= 0 || !$ticket->getFromDB($id)) {
 // Reserved to the central (technician) interface only. In the helpdesk
 // interface, a Self-Service user's CREATE right satisfies canUpdateItem(), which
 // would let the requester of a just-opened ticket send the report to arbitrary
-// addresses without limit. Requiring the central interface plus the ticket
-// update right closes this, on both GET and POST.
-if (Session::getCurrentInterface() !== 'central' || !$ticket->canUpdateItem()) {
+// addresses without limit. In central, a requester without the ticket update
+// right (e.g. the stock Observer profile) still passes canUpdateItem() through
+// canRequesterUpdateItem(), so the actual update right is required too — on both
+// GET and POST.
+if (Session::getCurrentInterface() !== 'central' || !Ticket::canUpdate() || !$ticket->canUpdateItem()) {
     throw new \Glpi\Exception\Http\AccessDeniedHttpException();
 }
 

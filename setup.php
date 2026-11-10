@@ -12,7 +12,7 @@
  * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0-or-later
  */
 
-define('PLUGIN_TICKETREPORT_VERSION', '1.0.2');
+define('PLUGIN_TICKETREPORT_VERSION', '1.0.3');
 define('PLUGIN_TICKETREPORT_MIN_GLPI_VERSION', '11.0.0');
 define('PLUGIN_TICKETREPORT_MAX_GLPI_VERSION', '12.9.99');
 
